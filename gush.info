@@ -1,0 +1,8 @@
+name = Gush
+description = A Profile for Demonstrating the Deployment of an Openshift Drupal Project using Travis-CI
+version = VERSION
+core = 7.x
+dependencies[] = block
+dependencies[] = dblog
+dependencies[] = droplet
+
