@@ -6,85 +6,41 @@
 
 set -e
 
-#
-# The PHP dir most be controlled by Drupal content
-#
-if [ -e "${OPENSHIFT_REPO_DIR}php" -a ! -h "${OPENSHIFT_REPO_DIR}php" ]
-then
-  echo "ERROR: The 'php' directory in your Git repo prevents Drupal from being installed.  Please remove 'php' and push again."
-  exit 5
-fi
+source .travis.sh
 
-DRUPAL_DIR=${OPENSHIFT_DATA_DIR}drupal
-DRUPAL_SITE_DIR=${OPENSHIFT_DATA_DIR}sites
+if [ ! -z "$TRAVIS" ];
+then 
+  echo 
 
-echo
-
-# Drush settings
-cat >$OPENSHIFT_HOMEDIR/.drush/drushrc.php <<EOF
+  # Drush Settings
+  cat >$OPENSHIFT_HOMEDIR/.drush/drushrc.php <<EOF
 <?php
   \$options['uri'] = \$_ENV['OPENSHIFT_APP_DNS'];
   \$options['root'] = \$_ENV['OPENSHIFT_REPO_DIR'].'php';
 EOF
+fi
 
 #
-# If there is no current download of Drupal, create one.
+# Build site using drush make.
 #
-if [ ! -d "${OPENSHIFT_DATA_DIR}downloads/current" ]
+if [ ! -d "${OPENSHIFT_REPO_DIR}php" ];
 then
-  mkdir -p ${OPENSHIFT_TMP_DIR}drupal
+  drush make --yes ${OPENSHIFT_REPO_DIR}misc/base.make ${OPENSHIFT_REPO_DIR}php
+  # Deploy custom profile and clean up.
+  mkdir -p ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  rm -fR ${OPENSHIFT_REPO_DIR}php/profiles/gush/.openshift \
+    ${OPENSHIFT_REPO_DIR}php/profiles/gush/misc \
+    ${OPENSHIFT_HOMEDIR}php/profiles/gush/libs
 
-  echo "Download and install the latest stable version of Drupal"
-  echo
-
-  mkdir -p ${OPENSHIFT_DATA_DIR}downloads
-  if ! drush dl drupal --destination=${OPENSHIFT_DATA_DIR}downloads --yes
-  then
-    echo "ERROR: Unable download and install Drupal."
-    exit 7
-  fi
-
-  #
-  # Link the /current symlink to the latest Drupal instance
-  #
-  rm -f ${OPENSHIFT_DATA_DIR}downloads/current
-  LATEST=$(ls -1t ${OPENSHIFT_DATA_DIR}downloads | head -1)
-  export DRUPAL_INSTALL_DIR="${OPENSHIFT_DATA_DIR}downloads/${LATEST}"
-  ln -s ${LATEST} ${OPENSHIFT_DATA_DIR}downloads/current
-
-  mv $DRUPAL_INSTALL_DIR/sites $DRUPAL_INSTALL_DIR/sites.original
-
-  #
-  # Ensure there is a default health check
-  #
-  cp ${OPENSHIFT_REPO_DIR}.openshift/health_check.php ${DRUPAL_INSTALL_DIR}
-
-
-  echo "Drupal installed to $DRUPAL_INSTALL_DIR"
 else
-  DRUPAL_INSTALL_DIR=$(readlink -f ${OPENSHIFT_DATA_DIR}downloads/current)
-  echo "Drupal is already installed at $DRUPAL_INSTALL_DIR"
+  drush make \
+    --yes  --no-core ${OPENSHIFT_REPO_DIR}misc/base.make \
+    --root=${OPENSHIFT_REPO_DIR}php
 fi
 
-echo
-
-#
-# Link the /sites directory (where Drupal stores modules and files)
-# into the install dir in order to keep it easily accessible.
-#/
-if [ ! -d "$DRUPAL_SITE_DIR" ]
-then
-  cp -r $DRUPAL_INSTALL_DIR/sites.original $DRUPAL_SITE_DIR
-  ln -sfn ../../sites $DRUPAL_INSTALL_DIR/sites
-fi
-
-#
-# Ensure that the app-root/runtime/repo/php PHP directory points
-# to a valid Drupal instance directory
-#
-ln -sfn ../../data/downloads/current ${OPENSHIFT_REPO_DIR}php
 if [ ! -d "${OPENSHIFT_REPO_DIR}php" ]
 then  
-  echo "ERROR: Unable to link the PHP directory, as the current Drupal instance is not a valid directory."
+  echo "ERROR: Drupal did not build."
   exit 8
 fi
