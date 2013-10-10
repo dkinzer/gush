@@ -11,7 +11,10 @@ install:
 test: simpletest
 
 simpletest:
+	ls -la $(OPENSHIFT_DATA_DIR)sites/default
+	ls -la $(OPENSHIFT_REPO_DIR)php/sites/default
 	cd php
+	ls -la
 	drush en simpletest
 	drush test-run Custom
 
