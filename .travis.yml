@@ -12,7 +12,7 @@ env:
   global:
     - OPENSHIFT_APP_NAME='drupal'
     - OPENSHIFT_REPO_DIR=./
-    - OPENSHIFT_DATA_DIR=./data
+    - OPENSHIFT_DATA_DIR=./data/
     - OPENSHIFT_MYSQL_DB_USERNAME='root'
     - OPENSHIFT_MYSQL_DB_PASSWORD=''
     - OPENSHIFT_MYSQL_DB_HOST='127.0.0.1'
