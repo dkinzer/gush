@@ -40,6 +40,12 @@ install:
 # Build the test site (there are many ways of accomplishing this step).
 before_script:
   - make build
+  - ls -la php/sites/all/default
+  - ls -la data
+  - ls -la data/sites
+  - ls -ls data/sites/default
+  - ls -la data/default
+
   - make install
 
 
