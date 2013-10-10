@@ -6,7 +6,7 @@
 
 set -e
 
-source .travis.sh
+source .openshift_mock.sh
 
 if [ -z "$TRAVIS" ];
 then 
