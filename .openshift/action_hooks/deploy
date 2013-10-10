@@ -6,7 +6,7 @@
 
 set -e
 
-source .travis.sh
+source .openshift_mock.sh
 
 DRUPAL_SITE_DIR=${OPENSHIFT_DATA_DIR}sites
 DRUPAL_PRIVATE_DIR=${OPENSHIFT_DATA_DIR}private
