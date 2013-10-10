@@ -56,6 +56,13 @@ then
     exit 10
   fi
 
+  mv ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php ${OPENSHIFT_DATA_DIR}sites/default-settings.php
+  mv ${OPENSHIFT_REPO_DIR}php/sites/default/files ${OPENSHIFT_REPO_DIR}/sites/default
+
+  ln -s ${DRUPAL_SITE_DIR}/default/files ${OPENSHIFT_REPO_DIR}php/sites/default/files
+  ln -s ${DRUPAL_SETTINGS} ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php
+
+
   #
   # Tweak settings.php to use the OpenShift environment variables instead of
   # the values passed to Drush.
@@ -107,8 +114,13 @@ END
   echo 
 else
   echo "Updating the existing Drupal site."
+
+  mv ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php ${OPENSHIFT_DATA_DIR}sites/default-settings.php
+  mv ${OPENSHIFT_REPO_DIR}php/sites/default/files ${OPENSHIFT_REPO_DIR}/sites/default
+
   ln -s ${DRUPAL_SITE_DIR}/default/files ${OPENSHIFT_REPO_DIR}php/sites/default/files
   ln -s ${DRUPAL_SETTINGS} ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php
+
   drush cc all --root=${OPENSHIFT_REPO_DIR}php
   drush updatedb --root=${OPENSHIFT_REPO_DIR}php
 fi
