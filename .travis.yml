@@ -36,6 +36,7 @@ before_install:
 install:
   - pear install drush/drush
   - phpenv rehash
+  - mkdir -p "$OPENSHIFT_HOMEDIR/.drush"
   - touch "$OPENSHIFT_HOMEDIR/.drush/drushrc.php"
 
 # Build the test site (there are many ways of accomplishing this step).
