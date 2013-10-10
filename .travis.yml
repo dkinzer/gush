@@ -1,0 +1,51 @@
+# There are no required fields for the .travis.yml
+# If this file were empty it would still be valid.
+#
+
+# A test matrix is possible in Travis by supplying multiple environment
+# variables and language versions.
+language: php
+php:
+ - '5.3'
+
+env:
+  global:
+    - OPENSHIFT_APP_NAME='drupal'
+    - OPENSHIFT_REPO_DIR=./
+    - OPENSHIFT_DATA_DIR=./data
+    - DATABASE='drupal'
+    - OPENSHIFT_MYSQL_DB_USERNAME='root'
+    - OPENSHIFT_MYSQL_DB_PASSWORD=''
+    - OPENSHIFT_MYSQL_DB_URL=
+    - OPENSHIFT_MYSQL_DB_HOST='127.0.0.1'
+    - OPENSHIFT_MYSQL_DB_PORT='3306'
+    - OPENSHIFT_DB_URL="mysql://$OPENSHIFT_MYSQL_DB_USERNAME@127.0.0.1/$OPENSHIFT_APP_NAME"
+    - DB_ENCODE='utf8'
+
+mysql:
+  database: $OPENSHIFT_APP_NAME
+  username: $OPENSHIFT_MYSQL_DB_USERNAME
+  encoding: $DB_ENCODE
+
+
+# Build fails if composer is not updated to latest version.
+before_install:
+  - composer self-update
+  - pear channel-discover pear.drush.org
+  
+
+# Prepare to build a test site by installing Drush.
+install:
+  - pear install drush/drush
+  - phpenv rehash
+
+
+# Build the test site (there are many ways of accomplishing this step).
+before_script:
+  - make build
+  - make install
+
+
+# Test the build.
+script:
+  - make test

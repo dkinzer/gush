@@ -43,7 +43,14 @@ then
   echo
   echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/default"
   echo
-  if ! drush site-install standard --site-name=${OPENSHIFT_APP_NAME} --account-pass=openshift_changeme --db-url=mysql://$OPENSHIFT_MYSQL_DB_USERNAME:$OPENSHIFT_MYSQL_DB_PASSWORD@$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT/$OPENSHIFT_APP_NAME --yes
+  if ! drush site-install \
+    gush --yes \
+    --root=${OPENSHIFT_REPO_DIR}php \
+    --db-url=${OPENSHIFT_MYSQL_DB_URL}${OPENSHIFT_APP_NAME} \
+    --db-su=$OPENSHIFT_DB_USERNAME \
+    --db-su-pw=$OPENSHIFT_DB_PASSWORD \
+    --account-name=admin \
+    --site-name=${OPENSHIFT_APP_NAME}
   then
     echo "Unable to configure your Drupal installation"
     echo
@@ -98,13 +105,11 @@ END
   popd
   echo
   echo "Drupal is now configured"
-  echo
-  echo "===================================================="
-  echo "  Drupal-Admin login: admin"
-  echo "  Drupal-Admin password: openshift_changeme"
-  echo "  Don't forget to change your drupal admin password!"
-  echo "===================================================="
+  echo 
 else
-  echo "Drupal is already configured.  Delete settings.php to rerun setup"
+  echo "Updating the existing Drupal site."
+  ln -s ${DRUPAL_SITE_DIR}/default/files ${OPENSHIFT_REPO_DIR}php/sites/default/files
+  ln -s ${DRUPAL_SETTINGS} ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php
+  drush cc all --root=${OPENSHIFT_REPO_DIR}php
+  drush updatedb --root=${OPENSHIFT_REPO_DIR}php
 fi
-echo
