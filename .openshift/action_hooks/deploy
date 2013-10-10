@@ -57,6 +57,11 @@ then
   fi
 
   popd
+
+  chmod u+w ${DRUPAL_SITE_DIR}/default \
+    ${OPENSHIFT_REPO_DIR}php/sites/default \
+    ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php
+
   mv ${OPENSHIFT_REPO_DIR}php/sites/default/settings.php ${DRUPAL_SETTINGS}
   mv ${OPENSHIFT_REPO_DIR}php/sites/default/files ${OPENSHIFT_DATA_DIR}/sites/default
 
