@@ -6,19 +6,21 @@
 
 set -e
 
-source .openshift_mock.sh
+#
+# Sometimes we need to mock the OpenShift Env for test purposes.
+#
+if [ -z "$OPENSHIFT_APP_NAME" ]; then
+  source misc/.openshift_mock.sh
+fi
 
-if [ -z "$TRAVIS" ];
-then 
-  echo 
+echo 
 
-  # Drush Settings
-  cat >$OPENSHIFT_HOMEDIR/.drush/drushrc.php <<EOF
+# Drush Settings
+cat >$OPENSHIFT_HOMEDIR/.drush/drushrc.php <<EOF
 <?php
   \$options['uri'] = \$_ENV['OPENSHIFT_APP_DNS'];
   \$options['root'] = \$_ENV['OPENSHIFT_REPO_DIR'].'php';
 EOF
-fi
 
 #
 # Build site using drush make.

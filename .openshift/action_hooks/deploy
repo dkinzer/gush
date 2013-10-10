@@ -6,7 +6,12 @@
 
 set -e
 
-source .openshift_mock.sh
+#
+# Sometimes we need to mock the OpenShift Env for test purposes.
+#
+if [ -z "$OPENSHIFT_APP_NAME" ]; then
+  source misc/.openshift_mock.sh
+fi
 
 DRUPAL_SITE_DIR=${OPENSHIFT_DATA_DIR}sites
 DRUPAL_PRIVATE_DIR=${OPENSHIFT_DATA_DIR}private
