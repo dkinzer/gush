@@ -12,5 +12,5 @@ test: simpletest
 
 simpletest:
 	drush --yes --root=$(OPENSHIFT_REPO_DIR)php en simpletest
-	drush --yes --root=$(OPENSHIFT_REPO_DIR)php simpletest Custom
+	drush --yes --root=$(OPENSHIFT_REPO_DIR)php testrun Custom
 
