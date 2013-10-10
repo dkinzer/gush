@@ -31,3 +31,5 @@ export OPENSHIFT_TMP_DIR
 export OPENSHIFT_APP_DNS
 export OPENSHIFT_HOMEDIR
 export DB_ENCODE
+
+[ ! -f "$OPENSHIFT_HOMEDIR/.drush/drushrc.php" ] && touch "$OPENSHIFT_HOMEDIR/.drush/drushrc.php"

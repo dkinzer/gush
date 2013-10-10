@@ -36,11 +36,11 @@ before_install:
 install:
   - pear install drush/drush
   - phpenv rehash
+  - [ ! -f "$OPENSHIFT_HOMEDIR/.drush/drushrc.php" ] && touch "$OPENSHIFT_HOMEDIR/.drush/drushrc.php"
 
 
 # Build the test site (there are many ways of accomplishing this step).
 before_script:
-  - pwd
   - make build
   - make install
 
