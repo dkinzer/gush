@@ -8,7 +8,7 @@ set -e
 
 source .travis.sh
 
-if [ ! -z "$TRAVIS" ];
+if [ -z "$TRAVIS" ];
 then 
   echo 
 
