@@ -12,7 +12,7 @@ install:
 test: simpletest
 
 simpletest:
-	pushd php
+	cd php
 	drush en simpletest
 	drush test-run Custom
 
