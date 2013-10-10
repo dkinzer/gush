@@ -47,8 +47,8 @@ then
     gush --yes \
     --root=${OPENSHIFT_REPO_DIR}php \
     --db-url=${OPENSHIFT_MYSQL_DB_URL}${OPENSHIFT_APP_NAME} \
-    --db-su=$OPENSHIFT_DB_USERNAME \
-    --db-su-pw=$OPENSHIFT_DB_PASSWORD \
+    --db-su=$OPENSHIFT_MYSQL_DB_USERNAME \
+    --db-su-pw=$OPENSHIFT_MYSQL_DB_PASSWORD \
     --account-name=admin \
     --site-name=${OPENSHIFT_APP_NAME}
   then
