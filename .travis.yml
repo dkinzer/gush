@@ -40,9 +40,7 @@ install:
 # Build the test site (there are many ways of accomplishing this step).
 before_script:
   - make build
-  - ls -la data
-  - ls -la data/sites
-  - ls -ls data/sites/default
+  - ls -la
 
   - make install
 
