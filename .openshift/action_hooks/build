@@ -33,7 +33,7 @@ then
   git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/gush
   rm -fR ${OPENSHIFT_REPO_DIR}php/profiles/gush/.openshift \
     ${OPENSHIFT_REPO_DIR}php/profiles/gush/misc \
-    ${OPENSHIFT_HOMEDIR}php/profiles/gush/libs
+    ${OPENSHIFT_REPO_DIR}php/profiles/gush/libs
 
 else
   drush make \
