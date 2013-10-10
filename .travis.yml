@@ -39,9 +39,8 @@ install:
 
 # Build the test site (there are many ways of accomplishing this step).
 before_script:
+  - pwd
   - make build
-  - ls -la
-
   - make install
 
 
