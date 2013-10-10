@@ -13,5 +13,6 @@ test: simpletest
 
 simpletest:
 	pushd php
+	drush en simpletest
 	drush test-run Custom
 
