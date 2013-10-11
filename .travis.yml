@@ -48,3 +48,14 @@ before_script:
 # Test the build.
 script:
   - make test
+
+# Add deploy step.
+deploy:
+  provider: openshift
+  user: dtkinzer@gmail.com
+  password:
+    secure: D5guVbZWMFg3lx1GaC6K13iyJFLRqXeCKV9u9VuPQIam/14cGfehG27pBd9VdCpjEMeO/1gZ+tnGhEDnaw3EMZ2n4Jz+kfREf4jWZcSmIY1Q5ccocQL4lTs8HKJ1IEXgi3JUCJhx9f9ynFddDxyzzGKjAJ8tKHto5u64ScLdXZA=
+  app: gush
+  domain: dkinzer
+  on:
+    repo: dkinzer/gush
