@@ -1,0 +1,48 @@
+#!/bin/bash
+# This is a simple build script and will be executed on your CI system if 
+# available.  Otherwise it will execute while your application is stopped
+# before the deploy step.  This script gets executed directly, so it
+# could be python, php, ruby, etc. 
+
+set -e
+
+#
+# Sometimes we need to mock the OpenShift Env for test purposes.
+#
+if [ -z "$OPENSHIFT_APP_NAME" ]; then
+  source misc/.openshift_mock.sh
+fi
+
+echo 
+
+# Drush Settings
+cat >$OPENSHIFT_HOMEDIR/.drush/drushrc.php <<EOF
+<?php
+  \$options['uri'] = \$_ENV['OPENSHIFT_APP_DNS'];
+  \$options['root'] = \$_ENV['OPENSHIFT_REPO_DIR'].'php';
+EOF
+
+#
+# Build site using drush make.
+#
+if [ ! -d "${OPENSHIFT_REPO_DIR}php" ];
+then
+  drush make --yes ${OPENSHIFT_REPO_DIR}misc/base.make ${OPENSHIFT_REPO_DIR}php
+  # Deploy custom profile and clean up.
+  mkdir -p ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  rm -fR ${OPENSHIFT_REPO_DIR}php/profiles/gush/.openshift \
+    ${OPENSHIFT_REPO_DIR}php/profiles/gush/misc \
+    ${OPENSHIFT_REPO_DIR}php/profiles/gush/libs
+
+else
+  drush make \
+    --yes  --no-core ${OPENSHIFT_REPO_DIR}misc/base.make \
+    --root=${OPENSHIFT_REPO_DIR}php
+fi
+
+if [ ! -d "${OPENSHIFT_REPO_DIR}php" ]
+then  
+  echo "ERROR: Drupal did not build."
+  exit 8
+fi
