@@ -36,7 +36,7 @@ then
   mkdir -p ${OPENSHIFT_REPO_DIR}php/profiles/gush
 
   # Unless we're inside the bare git repo, then the git commands will fail.
-  pushd $OPENSHIFT_REPO_DIR
+  pushd $OPENSHIFT_GIT_DIR
   git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/gush
   popd
 
