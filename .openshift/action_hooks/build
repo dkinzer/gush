@@ -13,6 +13,10 @@ if [ -z "$OPENSHIFT_APP_NAME" ]; then
   source misc/.openshift_mock.sh
 fi
 
+if [ -z "$OPENSHIFT_GIT_DIR" ]; then
+  OPENSHIFT_GIT_DIR=${HOME}/git/gush.git
+fi
+
 echo 
 
 # Drush Settings
@@ -30,7 +34,12 @@ then
   drush make --yes ${OPENSHIFT_REPO_DIR}misc/base.make ${OPENSHIFT_REPO_DIR}php
   # Deploy custom profile and clean up.
   mkdir -p ${OPENSHIFT_REPO_DIR}php/profiles/gush
+
+  # Unless we're inside the bare git repo, then the git commands will fail.
+  pushd $OPENSHIFT_REPO_DIR
   git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  popd
+
   rm -fR ${OPENSHIFT_REPO_DIR}php/profiles/gush/.openshift \
     ${OPENSHIFT_REPO_DIR}php/profiles/gush/misc \
     ${OPENSHIFT_REPO_DIR}php/profiles/gush/libs
