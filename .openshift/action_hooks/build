@@ -14,7 +14,7 @@ if [ -z "$OPENSHIFT_APP_NAME" ]; then
 fi
 
 if [ -z "$OPENSHIFT_GIT_DIR" ]; then
-  OPENSHIFT_GIT_DIR=${HOME}/git/gush.git
+  OPENSHIFT_GIT_DIR=${HOME}/git/${OPENSHIFT_APP_NAME}.git
 fi
 
 echo 
@@ -33,16 +33,16 @@ if [ ! -d "${OPENSHIFT_REPO_DIR}php" ];
 then
   drush make --yes ${OPENSHIFT_REPO_DIR}misc/base.make ${OPENSHIFT_REPO_DIR}php
   # Deploy custom profile and clean up.
-  mkdir -p ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  mkdir -p ${OPENSHIFT_REPO_DIR}php/profiles/${OPENSHIFT_APP_NAME}
 
   # Unless we're inside the bare git repo, then the git commands will fail.
   pushd $OPENSHIFT_GIT_DIR
-  git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/gush
+  git archive $(git rev-parse --abbrev-ref HEAD) | tar -x -C ${OPENSHIFT_REPO_DIR}php/profiles/${OPENSHIFT_APP_NAME}
   popd
 
-  rm -fR ${OPENSHIFT_REPO_DIR}php/profiles/gush/.openshift \
-    ${OPENSHIFT_REPO_DIR}php/profiles/gush/misc \
-    ${OPENSHIFT_REPO_DIR}php/profiles/gush/libs
+  rm -fR ${OPENSHIFT_REPO_DIR}php/profiles/${OPENSHIFT_APP_NAME}/.openshift \
+    ${OPENSHIFT_REPO_DIR}php/profiles/${OPENSHIFT_APP_NAME}/misc \
+    ${OPENSHIFT_REPO_DIR}php/profiles/${OPENSHIFT_APP_NAME}/libs
 
 else
   drush make \

@@ -49,7 +49,7 @@ then
   echo "Creating a new Drupal site at ${DRUPAL_SITE_DIR}/default"
   echo
   if ! drush site-install \
-    gush --yes \
+    ${OPENSHIFT_APP_NAME} --yes \
     --root=${OPENSHIFT_REPO_DIR}php \
     --db-url=${OPENSHIFT_MYSQL_DB_URL}${OPENSHIFT_APP_NAME} \
     --db-su=$OPENSHIFT_MYSQL_DB_USERNAME \
