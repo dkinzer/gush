@@ -10,7 +10,7 @@ php:
 
 env:
   global:
-    - OPENSHIFT_APP_NAME='drupal'
+    - OPENSHIFT_APP_NAME=gush
     - OPENSHIFT_REPO_DIR=${TRAVIS_BUILD_DIR}/
     - OPENSHIFT_GIT_DIR=${TRAVIS_BUILD_DIR}/.git
     - OPENSHIFT_DATA_DIR=${OPENSHIFT_REPO_DIR}data/
@@ -42,6 +42,7 @@ install:
 
 # Build the test site (there are many ways of accomplishing this step).
 before_script:
+  - env
   - make build
   - make install
 
